@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400;8..144,500;8..144,700&display=swap" rel="stylesheet">
+    <title>Border-radius Previewer</title>
+
+    <style>
+        body {
+            min-width: 1410px;
+            height: 100vh;
+            max-height: 100vh;
+            margin: 0;
+            font: bold 2.5rem "Roboto Flex", sans-serif;
+            color: white;
+            background-color: black;
+        }
+
+        main {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: nowrap;
+            align-items: center;
+            height: 100%;
+        }
+
+        section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+        }
+
+        label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 2;
+        }
+
+        span {
+            width: 40%;
+        }
+
+        input {
+            height: 2rem;
+            border-radius: 10px;
+            text-align: right;
+            width: 40%;
+        }
+
+        input, select {
+            font: 400 2rem 'Roboto Flex', sans-serif;
+        }
+
+        select {
+            text-align: right;
+            width: 30%;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button { margin-left: 20px; }
+
+        canvas {
+            background: rgb(131,58,180);
+            background: linear-gradient(135deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+            border: 1px solid gray;
+            width: 25rem;
+            height: 25rem;
+        }
+
+        canvas:hover {
+            opacity: .7;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <main>
+        <section>
+            <div style="display: flex; flex-direction: column; flex-direction: column; gap: 3rem; width: 60%;">
+                <div>
+                    Start
+                    <div style="display: flex; justify-content: end">
+                        <select onchange="handleUnit(this)">
+                            <option value="rem">REM</option>
+                            <option value="px">PX</option>
+                            <option value="%">%</option>
+                        </select>
+                    </div>
+                    <label>
+                        <span>TopLeft:</span>
+                        <input type="number" placeholder="TopLeft border-radius" value="5" onchange="handleChange()" id="start-top-left" />
+                    </label>
+                    <label>
+                        <span>TopRight:</span>
+                        <input type="number" placeholder="TopRight border-radius" value="5" onchange="handleChange()" id="start-top-right" />
+                    </label>
+                    <label>
+                        <span>BottomLeft:</span>
+                        <input type="number" placeholder="BottomLeft border-radius" value="5" onchange="handleChange()" id="start-bottom-left" />
+                    </label>
+                    <label>
+                        <span>BottomRight:</span>
+                        <input type="number" placeholder="BottomRight border-radius" value="5" onchange="handleChange()" id="start-bottom-right" />
+                    </label>
+                </div>
+
+                <div>
+                    End
+                    <label>
+                        <span>TopLeft:</span>
+                        <input type="number" placeholder="TopLeft border-radius" value="5" onchange="handleChange()" id="end-top-left" />
+                    </label>
+                    <label>
+                        <span>TopRight:</span>
+                        <input type="number" placeholder="TopRight border-radius" value="5" onchange="handleChange()" id="end-top-right" />
+                    </label>
+                    <label>
+                        <span>BottomLeft:</span>
+                        <input type="number" placeholder="BottomLeft border-radius" value="5" onchange="handleChange()" id="end-bottom-left" />
+                    </label>
+                    <label>
+                        <span>BottomRight:</span>
+                        <input type="number" placeholder="BottomRight border-radius" value="5" onchange="handleChange()" id="end-bottom-right" />
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div>
+                <canvas onclick="handleClipboard(this)" />
+            </div>
+        </section>
+    </main>
+
+    <script>
+
+        const stl = document.getElementById('start-top-left')
+        const str = document.getElementById('start-top-right')
+        const sbl = document.getElementById('start-bottom-right')
+        const sbr = document.getElementById('start-bottom-left')
+
+        const etl = document.getElementById('end-top-left')
+        const etr = document.getElementById('end-top-right')
+        const ebl = document.getElementById('end-bottom-right')
+        const ebr = document.getElementById('end-bottom-left')
+
+        for(input of document.getElementsByTagName('input')) {
+            input.min = '0'
+            input.max = '26'
+        }
+
+        let unit = 'rem'
+        const canvas = document.getElementsByTagName('canvas')[0]
+        canvas.style.borderRadius
+
+        const handleClipboard = e => {
+            navigator.clipboard.writeText(e.style.cssText)
+            alert('CSS copied :D')
+        }
+
+        const handleUnit = e => {
+            let maxLength;
+            unit = e.value
+
+            switch(unit) {
+                case 'px':
+                    maxLength = '402'
+                    break
+                case 'rem':
+                    maxLength = '26'
+                    break
+                case '%':
+                    maxLength = '100'
+                    break
+                default:
+                    maxLength = '255'
+                    break
+            }
+
+            for(input of document.getElementsByTagName('input')) {
+                input.max = maxLength
+            }
+
+            handleChange()
+        }
+
+        const handleChange = () => {
+            canvas.style.borderRadius = `${stl.value}${unit} ${str.value}${unit} ${sbl.value}${unit} ${sbr.value}${unit} / ${etl.value}${unit} ${etr.value}${unit} ${ebl.value}${unit} ${ebr.value}${unit}`
+        }
+
+        handleChange()
+
+    </script>
+
+</body>
